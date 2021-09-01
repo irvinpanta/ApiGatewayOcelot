@@ -1,0 +1,80 @@
+{
+  //Agregados
+  "Aggregates": [
+    {
+      "UpstreamPathTemplate": "/api/mesaSalon",
+      "RouteKeys": [ "salones", "mesas" ],
+      "Aggregator": "mesaSalonAggregator" //Nombre de la clase, donde tambien podemos hacer un aggregator
+    }
+  ],
+
+  "Routes": [
+
+    //Ruta de api/mesa
+    {
+      "UpstreamPathTemplate": "/api/mesa", //Ruta de nuestro endpoints, podemos agregar {path}
+      //quedaria asi: /api/{path}
+      "UpstreamHttpMethod": [], //Verbos a los que apunta puede ser GET, POST, PUT, DELETE  - podemos mandar el array [] y signica que acepta todos los verbos
+
+      //Cuando llamemos a api/salon redigera a host de destino
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost", //Host redigeremos la peticion
+          "Port": 44366 //Puerto
+        }
+      ],
+      "DownstreamPathTemplate": "/api/Mesa", //Url de ruta de los endpoints de la redireccion - Podemos agregar {path} y accederiamos a todos los endpoint quedaria /api/{path}
+      "Key": "mesas",
+
+
+      //Authenticacion con JWT
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      //Authroization
+      //"RouteClaimsRequirement": {
+      //"role": "ADMINISTRADOR" //Solo accede si usertType es admin
+      //}
+
+      //Proteger contra ataques DNS
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "3s", //En 3 segundos solo aceptara un LIMITE DE 3 solicitudes. 
+        "PeriodTimespan": 5, //Se tendra que esperar 5 segundos para reanudar
+        "Limit": 3
+      },
+
+      ///Trabajando con delegados
+      //"DelegatingHandlers": [
+        //"BlackListHandler"
+      //]
+    },
+
+    //Fin de ruta
+
+    //Ruta de api/Salon
+    {
+      "UpstreamPathTemplate": "/api/salon", //Ruta de nuestro endpoints, podemos agregar {path}
+      //quedaria asi: /api/{path}
+      "UpstreamHttpMethod": [], //Verbos a los que apunta puede ser GET, POST, PUT, DELETE  - podemos mandar el array [] y signica que acepta todos los verbos
+
+      //Cuando llamemos a api/salon redigera a host de destino
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost", //Host redigeremos la peticion
+          "Port": 44366 //Puerto
+        }
+      ],
+      "DownstreamPathTemplate": "/api/Salon", //Url de ruta de los endpoints de la redireccion - Podemos agregar {path} y accederiamos a todos los endpoint //quedaria /api/{path}
+      "Key": "salones"
+    }
+    //Fin de ruta
+
+
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:44343"
+  }
+
+}
